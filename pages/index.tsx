@@ -1,6 +1,23 @@
 import Head from 'next/head'
+import {NextPage} from "next";
+import Link from 'next/link'
+import { getSortedPostsData } from '../lib/post'
+import utilStyles from '../styles/utils.module.css'
 
-export default function Home() {
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData()
+  return {
+    props: {
+      allPostsData
+    }
+  }
+}
+
+interface HomePageProps {
+  allPostsData: any;
+}
+
+const Home: NextPage<HomePageProps> = ({ allPostsData }) => {
   return (
     <div className="container">
       <Head>
@@ -10,7 +27,10 @@ export default function Home() {
 
       <main>
         <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Leer{' '}
+          <Link href="/posts/primer-post">
+            <a>esta pagina!</a>
+          </Link>
         </h1>
 
         <p className="description">
@@ -47,6 +67,21 @@ export default function Home() {
           </a>
         </div>
       </main>
+
+      <section className={`${utilStyles.headingMd} ${utilStyles.padding1px}`}>
+        <h2 className={utilStyles.headingLg}>Blog</h2>
+        <ul className={utilStyles.list}>
+          {allPostsData.map(({ id, date, title }) => (
+              <li className={utilStyles.listItem} key={id}>
+                {title}
+                <br />
+                {id}
+                <br />
+                {date}
+              </li>
+          ))}
+        </ul>
+      </section>
 
       <footer>
         <a
@@ -207,3 +242,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home;
